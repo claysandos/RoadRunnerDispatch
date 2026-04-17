@@ -1,33 +1,125 @@
-# Gradle files
+# ========================
+# Gradle
+# ========================
 .gradle/
 build/
-
-# Local configuration file (sdk path, etc)
+**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
 local.properties
 
-# Log/OS Files
-*.log
-
-# Android Studio generated files and folders
+# ========================
+# Android Studio / IntelliJ
+# ========================
+.idea/
+*.iml
+*.iws
+*.ipr
 captures/
 .externalNativeBuild/
 .cxx/
+*.ap_
+
+# ========================
+# Android
+# ========================
+/local.properties
 *.apk
-output.json
+*.aab
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+release/
+proguard/
 
-# IntelliJ
-*.iml
-.idea/
-misc.xml
-deploymentTargetDropDown.xml
-render.experimental.xml
+# ========================
+# Kotlin / KMP
+# ========================
+*.kotlin_module
+kotlin-js-store/
+.kotlin/
+xcuserdata/
 
-# Keystore files
+# ========================
+# iOS (KMP)
+# ========================
+*.xcworkspace
+Pods/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+*.moved-aside
+*.hmap
+*.ipa
+
+# ========================
+# macOS
+# ========================
+.DS_Store
+*.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ========================
+# Windows
+# ========================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ========================
+# Linux
+# ========================
+*~
+.nfs*
+
+# ========================
+# Node (if using compose web)
+# ========================
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnp.*
+.yarn/
+
+# ========================
+# Secrets & Keys
+# ========================
 *.jks
 *.keystore
-
-# Google Services (e.g. APIs or Firebase)
 google-services.json
+GoogleService-Info.plist
+*.p12
+*.mobileprovision
+secrets.properties
 
-# Android Profiling
-*.hprof
+# ========================
+# Signing configs (keep template, ignore real)
+# ========================
+keystore.properties
+
+# ========================
+# Test outputs
+# ========================
+*.log
+test-results/
+reports/
+
+# ========================
+# Compose Compiler reports (optional, can commit)
+# ========================
+compose_compiler_config.conf
