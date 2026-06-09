@@ -190,7 +190,7 @@ fun AddDrive(){
 
         var selectedAction by remember { mutableStateOf("Pickup") }
         var selectedType by remember { mutableStateOf("Dealer") }
-        var location by remember { mutableStateOf("") }
+        var destination by remember { mutableStateOf("") }
         var customerName by remember { mutableStateOf("") }
         var customerPhone by remember { mutableStateOf("") }
         var urgent by remember { mutableStateOf(false) }
@@ -234,7 +234,7 @@ fun AddDrive(){
 
         Column(horizontalAlignment = Alignment.Start, modifier = Modifier
             .border(2.dp, orange, shape = AbsoluteCutCornerShape(5.dp))){
-            TextField(modifier = Modifier.height(50.dp), value = location, onValueChange = { location = it }, placeholder = { Text("Location") })
+            TextField(modifier = Modifier.height(50.dp), value = destination, onValueChange = { destination = it }, placeholder = { Text("Destination") })
             TextField(modifier = Modifier.height(50.dp), enabled = selectedType == "Customer", value = customerName, onValueChange = { customerName = it }, placeholder = { Text("Customer Name") })
             TextField(modifier = Modifier.height(50.dp), enabled = selectedType == "Customer", value = customerPhone, onValueChange = { customerPhone = it }, placeholder = { Text("Customer Phone") })
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(40.dp),
@@ -289,7 +289,6 @@ fun AddDrive(){
 }
 
 @Composable
-@Preview
 fun DriveInfo(){
     val scrollState = rememberScrollState()
     Column(
@@ -550,5 +549,116 @@ fun DriveCard(type: String, action: String, location: String, status: String, pi
             }
             Text(text = status, fontSize = 12.sp)
         }
+    }
+}
+
+@Composable
+fun Signup(){
+    Column(
+        modifier = Modifier
+            .border(10.dp, orange, RoundedCornerShape(52.dp))
+            .background(Color.White)
+            .safeContentPadding()
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            painter = painterResource(Res.drawable.roadrunnerdispatchlogo),
+            contentDescription = "RoadRunnerDispatch Home Logo",
+            modifier = Modifier.size(180.dp)
+        )
+
+        Text(modifier = Modifier.padding(bottom = 10.dp), text = "Signup")
+
+        var username by remember {mutableStateOf("")}
+        var password by remember {mutableStateOf("")}
+        var shop by remember {mutableStateOf("")}
+
+        TextField(modifier = Modifier.height(50.dp), value = username, onValueChange = { username = it }, placeholder = { Text("USERNAME") })
+        TextField(modifier = Modifier.height(50.dp), value = password, onValueChange = { password = it }, placeholder = { Text("PASSWORD") })
+        TextField(modifier = Modifier.height(50.dp), value = shop, onValueChange= { shop = it }, placeholder = { Text("SHOP") })
+
+        Button(
+            modifier = Modifier.border(
+                4.dp,
+                Color.LightGray,
+                shape = RoundedCornerShape(20.dp)
+            ),
+            onClick = {},
+            colors = ButtonDefaults.buttonColors(containerColor = orange),
+            shape = RoundedCornerShape(20.dp)
+        ) {
+            Text("Register")
+        }
+    }
+}
+
+@Composable
+fun Login(){
+    Column(
+        modifier = Modifier
+            .border(10.dp, orange, RoundedCornerShape(52.dp))
+            .background(Color.White)
+            .safeContentPadding()
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            painter = painterResource(Res.drawable.roadrunnerdispatchlogo),
+            contentDescription = "RoadRunnerDispatch Home Logo",
+            modifier = Modifier.size(180.dp)
+        )
+
+        Text(modifier = Modifier.padding(bottom = 10.dp), text = "Login")
+
+        var username by remember {mutableStateOf("")}
+        var password by remember {mutableStateOf("")}
+        var shop by remember {mutableStateOf("")}
+
+        TextField(modifier = Modifier.height(50.dp), value = username, onValueChange = { username = it }, placeholder = { Text("USERNAME") })
+        TextField(modifier = Modifier.height(50.dp), value = password, onValueChange = { password = it }, placeholder = { Text("PASSWORD") })
+        TextField(modifier = Modifier.height(50.dp), value = shop, onValueChange= { shop = it }, placeholder = { Text("SHOP") })
+
+        Button(
+            modifier = Modifier.border(
+                4.dp,
+                Color.LightGray,
+                shape = RoundedCornerShape(20.dp)
+            ),
+            onClick = {},
+            colors = ButtonDefaults.buttonColors(containerColor = orange),
+            shape = RoundedCornerShape(20.dp)
+        ) {
+            Text("Login")
+        }
+    }
+}
+
+@Composable
+fun Settings(){
+    Column(
+        modifier = Modifier
+            .border(10.dp, orange, RoundedCornerShape(52.dp))
+            .background(Color.White)
+            .safeContentPadding()
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            painter = painterResource(Res.drawable.roadrunnerdispatchlogo),
+            contentDescription = "RoadRunnerDispatch Home Logo",
+            modifier = Modifier.size(180.dp)
+        )
+
+        Text(modifier = Modifier.padding(bottom = 10.dp), text = "Settings")
+
+        // Shop name
+        Text(text = "Shop Name")
+
+        // Shop trucks
+        Text(text = "Trucks")
+
+        // Shop drivers
+        Text(text = "Drivers")
     }
 }
