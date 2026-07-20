@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -24,7 +25,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
@@ -38,9 +38,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.painterResource
 import roadrunnerdispatch.composeapp.generated.resources.Res
 import roadrunnerdispatch.composeapp.generated.resources.roadrunnerdispatchlogo
@@ -51,126 +54,187 @@ val tan = Color(0xFFFEF4C8)
 
 @Composable
 fun App() {
-    MaterialTheme {
-        Column(
-            modifier = Modifier
-                .border(10.dp, orange, RoundedCornerShape(52.dp))
-                .background(Color.White)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Image(
-                painter = painterResource(Res.drawable.roadrunnerdispatchlogo),
-                contentDescription = "RoadRunnerDispatch Home Logo",
-                modifier = Modifier.size(180.dp)
-            )
+    val navController = rememberNavController()
 
-            Row(
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                Button(
-                    modifier = Modifier.border(
-                        4.dp,
-                        Color.LightGray,
-                        shape = RoundedCornerShape(20.dp)
-                    ),
-                    onClick = {},
-                    colors = ButtonDefaults.buttonColors(containerColor = orange),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    Text("Drives")
-                }
-                Button(
-                    modifier = Modifier.border(
-                        4.dp,
-                        Color.LightGray,
-                        shape = RoundedCornerShape(20.dp)
-                    ),
-                    onClick = {},
-                    colors = ButtonDefaults.buttonColors(containerColor = orange),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    Text("Add Drive")
-                }
+    MaterialTheme {
+        NavHost(
+            navController = navController,
+            startDestination = "home"
+        ) {
+            composable("home") {
+                HomeScreen(
+                    onOpenDrives = { navController.navigate("drives") },
+                    onOpenAddDrive = { navController.navigate("add_drive") }
+                )
             }
 
-            Text(
-                modifier = Modifier.padding(top = 20.dp, bottom = 2.dp),
-                text = "Active Drivers",
-                textDecoration = TextDecoration.Underline,
-                fontSize = 22.sp
-            )
+            composable("drives") {
+                Drives(
+                    onOpenAddDrive = { navController.navigate("add_drive") },
+                    onHome = { navController.navigate("home") },
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
-            // Get active drivers here
-            LazyColumn(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(start = 4.dp, end = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                // Loop through active drivers and create composables
-                /*
-                for(fact in allFacts){
-                    item {
-                        Fact(fact = fact.toAPI())
-                    }
-                }
-                 */
-                item {
-                    DriverCard("Clay", "Idle")
-                }
+            composable("add_drive") {
+                AddDrive(
+                    onAddDrive = { navController.navigate("drives") },
+                    onHome = { navController.navigate("home") },
+                    onBack = { navController.popBackStack() }
+                )
             }
         }
     }
 }
 
 @Composable
-fun Drives(){
-    MaterialTheme{
-        Column(
-            modifier = Modifier
-                .border(10.dp, orange, RoundedCornerShape(52.dp))
-                .background(Color.White)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Image(
-                painter = painterResource(Res.drawable.roadrunnerdispatchlogo),
-                contentDescription = "RoadRunnerDispatch Home Logo",
-                modifier = Modifier.size(180.dp)
-            )
+fun HomeScreen(
+    onOpenDrives: () -> Unit,
+    onOpenAddDrive: () -> Unit
+){
+    Column(
+        modifier = Modifier
+            .border(10.dp, orange, RoundedCornerShape(52.dp))
+            .background(Color.White)
+            .safeContentPadding()
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            painter = painterResource(Res.drawable.roadrunnerdispatchlogo),
+            contentDescription = "RoadRunnerDispatch Home Logo",
+            modifier = Modifier.size(180.dp)
+        )
 
-            Button(modifier = Modifier.border(4.dp, Color.LightGray, shape = RoundedCornerShape(20.dp)), onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = orange), shape = RoundedCornerShape(20.dp)) {
+        Row(
+            modifier = Modifier,
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            Button(
+                modifier = Modifier.border(
+                    4.dp,
+                    Color.LightGray,
+                    shape = RoundedCornerShape(20.dp)
+                ),
+                onClick = { onOpenDrives() },
+                colors = ButtonDefaults.buttonColors(containerColor = orange),
+                shape = RoundedCornerShape(20.dp)
+            ) {
+                Text("Drives")
+            }
+            Button(
+                modifier = Modifier.border(
+                    4.dp,
+                    Color.LightGray,
+                    shape = RoundedCornerShape(20.dp)
+                ),
+                onClick = { onOpenAddDrive() },
+                colors = ButtonDefaults.buttonColors(containerColor = orange),
+                shape = RoundedCornerShape(20.dp)
+            ) {
                 Text("Add Drive")
             }
+        }
 
-            Text(modifier = Modifier.padding(top = 20.dp, bottom = 2.dp), text = "Drives", textDecoration = TextDecoration.Underline, fontSize = 22.sp)
+        Text(
+            modifier = Modifier.padding(top = 20.dp, bottom = 2.dp),
+            text = "Active Drivers",
+            textDecoration = TextDecoration.Underline,
+            fontSize = 22.sp
+        )
 
-            // Get drives here
-            LazyColumn(modifier = Modifier
+        // Get active drivers here
+        LazyColumn(
+            modifier = Modifier
                 .wrapContentSize()
-                .padding(start = 4.dp, end = 4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                // Loop through active drives and create composables
-                /*
-                for(fact in allFacts){
-                    item {
-                        Fact(fact = fact.toAPI())
-                    }
-                }
-                 */
+                .padding(start = 4.dp, end = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            // Loop through active drivers and create composables
+            /*
+            for(fact in allFacts){
                 item {
-                    DriveCard(type = "Dealer", action = "Trade", location = "Karl Malone ADS", status = "Active", pickupMachines = listOf("2026 YZ250"), dropoffMachines = listOf("2026 YZ450F"))
+                    Fact(fact = fact.toAPI())
                 }
+            }
+             */
+            item {
+                DriverCard("Clay", "Idle")
             }
         }
     }
 }
 
 @Composable
-fun AddDrive(){
+fun Drives(
+    onOpenAddDrive: () -> Unit,
+    onHome: () -> Unit,
+    onBack: () -> Unit
+){
+    Column(
+        modifier = Modifier
+            .border(10.dp, orange, RoundedCornerShape(52.dp))
+            .background(Color.White)
+            .safeContentPadding()
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            painter = painterResource(Res.drawable.roadrunnerdispatchlogo),
+            contentDescription = "RoadRunnerDispatch Home Logo",
+            modifier = Modifier.size(180.dp)
+        )
+
+        Row(){
+            Button(modifier = Modifier
+                .border(4.dp, Color.LightGray, shape = RoundedCornerShape(20.dp)),
+                onClick = { onBack() },
+                colors = ButtonDefaults.buttonColors(containerColor = orange),
+                shape = RoundedCornerShape(20.dp)) {
+                Text("Back")
+            }
+
+            Button(modifier = Modifier
+                .border(4.dp, Color.LightGray, shape = RoundedCornerShape(20.dp)),
+                onClick = { onHome() },
+                colors = ButtonDefaults.buttonColors(containerColor = orange),
+                shape = RoundedCornerShape(20.dp)) {
+                Text("Home")
+            }
+
+            Button(modifier = Modifier.border(4.dp, Color.LightGray, shape = RoundedCornerShape(20.dp)), onClick = { onOpenAddDrive() }, colors = ButtonDefaults.buttonColors(containerColor = orange), shape = RoundedCornerShape(20.dp)) {
+                Text("Add Drive")
+            }
+        }
+
+        Text(modifier = Modifier.padding(top = 20.dp, bottom = 2.dp), text = "Drives", textDecoration = TextDecoration.Underline, fontSize = 22.sp)
+
+        // Get drives here
+        LazyColumn(modifier = Modifier
+            .wrapContentSize()
+            .padding(start = 4.dp, end = 4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            // Loop through active drives and create composables
+            /*
+            for(fact in allFacts){
+                item {
+                    Fact(fact = fact.toAPI())
+                }
+            }
+             */
+            item {
+                DriveCard(type = "Dealer", action = "Trade", destination = "Karl Malone ADS", status = "Active", pickupMachines = listOf("2026 YZ250"), dropoffMachines = listOf("2026 YZ450F"))
+            }
+        }
+    }
+}
+
+@Composable
+fun AddDrive(
+    onAddDrive: () -> Unit,
+    onHome: () -> Unit,
+    onBack: () -> Unit,
+    viewModel: DrivesViewModel = viewModel { DrivesViewModel() }
+){
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -185,7 +249,7 @@ fun AddDrive(){
         Image(
             painter = painterResource(Res.drawable.roadrunnerdispatchlogo),
             contentDescription = "RoadRunnerDispatch Home Logo",
-            modifier = Modifier.size(180.dp)
+            modifier = Modifier.size(160.dp)
         )
 
         var selectedAction by remember { mutableStateOf("Pickup") }
@@ -194,15 +258,13 @@ fun AddDrive(){
         var customerName by remember { mutableStateOf("") }
         var customerPhone by remember { mutableStateOf("") }
         var urgent by remember { mutableStateOf(false) }
-        var date = rememberDatePickerState()
+        val date = rememberDatePickerState()
 
         // Need to change type to Machine
         var machine1 by remember { mutableStateOf("") }
         var machine2 by remember { mutableStateOf("") }
         var machine3 by remember { mutableStateOf("") }
         var machine4 by remember { mutableStateOf("") }
-
-        var machineCount by remember { mutableStateOf(1) }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)){
             Row(modifier = Modifier.border(2.dp, orange, shape = AbsoluteCutCornerShape(5.dp))){
@@ -272,24 +334,45 @@ fun AddDrive(){
             }
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally){
-            for(i in 0 until machineCount){
-                Column(horizontalAlignment = Alignment.Start, modifier = Modifier
-                    .border(2.dp, orange, shape = AbsoluteCutCornerShape(5.dp))
-                    .padding(10.dp)){
-                    MachineEditCard(type = selectedType, machineNum = i + 1)
-                }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)){
+            Column(horizontalAlignment = Alignment.Start){
+                MachineEditCard(type = selectedType)
+            }
+        }
+
+        Row(){
+            Button(modifier = Modifier
+                .border(4.dp, Color.LightGray, shape = RoundedCornerShape(20.dp)),
+                onClick = { onBack() },
+                colors = ButtonDefaults.buttonColors(containerColor = orange),
+                shape = RoundedCornerShape(20.dp)) {
+                Text("Back")
             }
 
-            Button(modifier = Modifier.border(4.dp, Color.LightGray, shape = CutCornerShape(5.dp)), onClick = { machineCount++ }, colors = ButtonDefaults.buttonColors(containerColor = orange), shape = CutCornerShape(5.dp)){
-                Text("+")
+            Button(modifier = Modifier
+                .border(4.dp, Color.LightGray, shape = RoundedCornerShape(20.dp)),
+                onClick = { onHome() },
+                colors = ButtonDefaults.buttonColors(containerColor = orange),
+                shape = RoundedCornerShape(20.dp)) {
+                Text("Home")
+            }
+
+            Button(modifier = Modifier
+                .border(4.dp, Color.LightGray, shape = RoundedCornerShape(20.dp)),
+                onClick = {
+                    onAddDrive();
+                    viewModel.addDrive(selectedAction, selectedType, destination, customerName, customerPhone, urgent, date.selectedDateMillis!!, Machine("UK21001", "2025", "KTM", "DUKE", "ORG", "PICKUP"))
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = orange),
+                shape = RoundedCornerShape(20.dp)) {
+                Text("Add Drive")
             }
         }
     }
 }
 
 @Composable
-fun DriveInfo(){
+fun DriveInfo(action: String, type: String, destination: String, name: String, phone: String, urgency: Boolean, date: String){
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -307,21 +390,18 @@ fun DriveInfo(){
             modifier = Modifier.size(180.dp)
         )
 
-        val customerName = ""
-        val customerPhone = ""
-        val urgent = false
         Row(horizontalArrangement = Arrangement.spacedBy(100.dp)){
             Column(){
-                Text("Action: ACTION")
-                Text("Type: TYPE")
-                Text("Location: LOCATION")
-                if(customerName != "" && customerPhone != ""){
-                    Text("Customer Name: NAME")
-                    Text("Customer Phone: PHONE")
+                Text("Action: $action")
+                Text("Type: $type")
+                Text("Location: $destination")
+                if(name != "" && phone != ""){
+                    Text("Customer Name: $name")
+                    Text("Customer Phone: $phone")
                 }
-                Text("Urgent: URGENCY")
-                if(!urgent){
-                    Text("Date: DATE")
+                Text("Urgent: $urgency")
+                if(!urgency){
+                    Text("Date: $date")
                 }
             }
         }
@@ -363,12 +443,13 @@ fun DriverCard(name: String, status: String){
 }
 
 @Composable
-fun MachineEditCard(type: String, machineNum: Int){
+fun MachineEditCard(type: String){
     Column(modifier = Modifier
         .clip(CutCornerShape(10.dp))
         .background(tan)
         .border(3.dp, orange, shape = CutCornerShape(10.dp))
-        .padding(15.dp)) {
+        .padding(15.dp)
+        .width(90.dp)) {
 
         var vin by remember { mutableStateOf("") }
         var year by remember { mutableStateOf("") }
@@ -377,7 +458,6 @@ fun MachineEditCard(type: String, machineNum: Int){
         var color by remember { mutableStateOf("") }
         var action by remember { mutableStateOf("") }
 
-        Text("Machine $machineNum")
         TextField(
             modifier = Modifier.height(50.dp),
             value = vin,
@@ -450,7 +530,14 @@ fun MachineInfoCard(vin: String, year: String, make: String, model: String,type:
 }
 
 @Composable
-fun DriveCard(type: String, action: String, location: String, status: String, pickupMachines: List<String>?, dropoffMachines: List<String>?){
+fun DriveCard(
+    type: String,
+    action: String,
+    destination: String,
+    status: String,
+    pickupMachines: List<String>?,
+    dropoffMachines: List<String>?
+){
     Row(
         modifier = Modifier
             .clip(CutCornerShape(10.dp))
@@ -462,7 +549,7 @@ fun DriveCard(type: String, action: String, location: String, status: String, pi
     ) {
         Column() {
             Text(text = "$type $action", fontSize = 16.sp)
-            Text(text = location, fontSize = 12.sp)
+            Text(text = destination, fontSize = 12.sp)
             if (action == "Pickup") {
                 Row() {
                     Text(text = "Picking up: ", fontSize = 12.sp)
@@ -541,7 +628,7 @@ fun DriveCard(type: String, action: String, location: String, status: String, pi
                     Color.LightGray,
                     shape = RoundedCornerShape(20.dp)
                 ).size(width = 75.dp, height = 40.dp),
-                onClick = {},
+                onClick = { },
                 colors = ButtonDefaults.buttonColors(containerColor = blue),
                 shape = RoundedCornerShape(20.dp)
             ) {

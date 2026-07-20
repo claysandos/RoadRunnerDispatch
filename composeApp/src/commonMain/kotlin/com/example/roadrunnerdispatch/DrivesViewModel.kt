@@ -1,8 +1,6 @@
 package com.example.roadrunnerdispatch
 
-import android.app.Application
-import androidx.compose.material3.DatePickerState
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,13 +8,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class Machine(val vin: String, val year: String, val make: String, val model: String, val color: String, val action: String)
-data class Drive(val action: String, val type: String, val destination: String, val customerName: String, val customerPhone: String, val urgent: Boolean, val date: DatePickerState, val machines: List<Machine>, val machineCount: Int)
+data class Drive(val action: String, val type: String, val destination: String, val customerName: String?, val customerPhone: String?, val urgent: Boolean, val date: Long, val machine: Machine)
 
-class DrivesViewModel(application: Application): AndroidViewModel(application) {
-    init {
-        // Initialize VM from DB
-    }
-
+class DrivesViewModel(): ViewModel() {
     // MODEL - Stores actual drive list data (mutable)
     private val actualDriveList: MutableStateFlow<List<Drive>> = MutableStateFlow(listOf())
 
@@ -33,12 +27,11 @@ class DrivesViewModel(application: Application): AndroidViewModel(application) {
      * @param customerPhone - phone number of the customer if applicable
      * @param urgent - urgency of the drive
      * @param date - due date of the drive
-     * @param machines - list of machines associated with the drive
-     * @param machineCount - number of machines associated with the drive
+     * @param machine - machine associated with the drive
      */
-    fun addDrive(action: String, type: String, destination: String, customerName: String?, customerPhone: String?, urgent: Boolean, date: DatePickerState, machines: List<Machine>, machineCount: Int){
+    fun addDrive(action: String, type: String, destination: String, customerName: String?, customerPhone: String?, urgent: Boolean, date: Long, machine: Machine){
         viewModelScope.launch {
-           val newDrive = Drive(action, type, destination, customerName!!, customerPhone!!, urgent, date, machines, machineCount)
+           val newDrive = Drive(action, type, destination, customerName!!, customerPhone!!, urgent, date, machine)
            actualDriveList.update { list -> list + newDrive }
         }
     }
@@ -50,7 +43,7 @@ class DrivesViewModel(application: Application): AndroidViewModel(application) {
      */
     fun removeDrive(drive: Drive){
         viewModelScope.launch {
-            actualDriveList.update{ list -> list.filter { it.action != drive.action && it.type != drive.type && it.date != drive.date && it.destination != drive.destination && it.machineCount != drive.machineCount }}
+            actualDriveList.update{ list -> list.filter { it.action != drive.action && it.type != drive.type && it.date != drive.date && it.destination != drive.destination }}
         }
     }
 }
